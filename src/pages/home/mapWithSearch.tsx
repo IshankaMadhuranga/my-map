@@ -1,39 +1,68 @@
 import React, { FC, useState, useEffect, useMemo } from "react";
 import { GoogleMap, Marker } from "@react-google-maps/api";
-import { Input } from "antd";
-import { CloseOutlined } from "@ant-design/icons";
+import { AutoComplete } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  PlaceDetails,
+  addToHistory,
   requestAutoCompleteResults,
+  requestDetailResults,
   selectAutoCompleteResults,
+  selectDetailResults,
+  selectHistory,
 } from "../../store/reducers/locationSlice";
 
 const MapWithSearchBox: FC = () => {
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [place, setPlace] = useState<google.maps.places.PlaceResult | null>(
-    null
-  );
-  const [history, setHistory] = useState<google.maps.places.PlaceResult[]>([]);
   const [searchText, setSearchText] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+
+  const [value, setValue] = useState("");
+  const [options, setOptions] = useState<{ label: string; value: string }[]>(
+    []
+  );
 
   const center = useMemo(() => ({ lat: 4.2105, lng: 101.9758 }), []);
 
   const dispatch = useDispatch();
   const autoCompleteResults = useSelector(selectAutoCompleteResults);
+  const detailResults = useSelector(selectDetailResults);
+  const history = useSelector(selectHistory);
 
   useEffect(() => {
-    dispatch(requestAutoCompleteResults("batapola"));
-  }, []);
+    if (searchText.length > 0) {
+      dispatch(requestAutoCompleteResults(searchText));
+    }
+  }, [searchText]);
 
   useEffect(() => {
-    if (place) {
-      const index = history.findIndex((ele) => ele.place_id == place.place_id);
+    if (autoCompleteResults.length > 0) {
+      const castedValues = autoCompleteResults.map(
+        ({ description, place_id }) => ({
+          label: description,
+          value: place_id ?? "",
+        })
+      );
+      setOptions(castedValues);
+    }
+  }, [autoCompleteResults]);
+
+  useEffect(() => {
+    if (detailResults) {
+      setUpMap(detailResults);
+
+      const index = history.findIndex(
+        (ele) => ele.place_id == detailResults.place_id
+      );
       if (index === -1) {
-        setHistory((prv) => [place, ...prv]);
+        addToHistory(detailResults);
+        const newObj = {
+          label: "Recent search - " + detailResults.formatted_address ?? "",
+          value: detailResults.place_id,
+        };
+        setOptions((prv) => [...prv, newObj]);
       }
     }
-  }, [place]);
+  }, [detailResults]);
 
   const mapContainerStyle = {
     width: "100%",
@@ -44,15 +73,24 @@ const MapWithSearchBox: FC = () => {
     setMap(map);
   };
 
-  const setUpMap = (value: google.maps.places.PlaceResult) => {
-    setPlace(value);
-    const { geometry, formatted_address } = value;
-    const loc = geometry?.location;
+  const setUpMap = (value: PlaceDetails) => {
+    const loc = value?.geometry?.location;
     if (map && loc) {
       map.panTo(loc);
       map.setZoom(10);
     }
-    if (formatted_address) setSearchText(formatted_address);
+  };
+
+  const onSelect = (
+    value: string,
+    option: { label: string; value: string }
+  ) => {
+    setValue(option.label);
+    dispatch(requestDetailResults(value));
+  };
+
+  const onChange = (data: string) => {
+    setValue(data);
   };
 
   return (
@@ -62,27 +100,25 @@ const MapWithSearchBox: FC = () => {
       zoom={8}
       onLoad={onLoad}
     >
-      <Input
-        type="text"
+      <AutoComplete
+        value={value}
+        options={options}
+        style={{ width: 200 }}
+        onSelect={onSelect}
+        onSearch={(text) => setSearchText(text)}
+        onChange={onChange}
         placeholder="Search places..."
-        onFocus={() => setLoading(true)}
-        onBlur={() => setLoading(false)}
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-        style={{
-          width: "16rem",
-          margin: "0.1rem",
-        }}
-        size="large"
-        suffix={<CloseOutlined onClick={() => setSearchText("")} />}
+        // onClear={() => alert("clear")}
+        allowClear
       />
 
-      {place && (
+      {detailResults && (
         <Marker
-          key={place.place_id}
+          key={detailResults.place_id}
+          icon={detailResults.icon}
           position={{
-            lat: place.geometry?.location?.lat()!,
-            lng: place.geometry?.location?.lng()!,
+            lat: detailResults.geometry?.location?.lat()!,
+            lng: detailResults.geometry?.location?.lng()!,
           }}
         />
       )}

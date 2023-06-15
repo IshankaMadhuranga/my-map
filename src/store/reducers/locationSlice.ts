@@ -1,12 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "..";
 
+export interface PlaceDetails {
+  formatted_address?: string;
+  place_id: string;
+  icon?: string;
+  geometry?: google.maps.places.PlaceGeometry;
+}
 interface LocationState {
-  readonly history: google.maps.places.PlaceResult[];
-  readonly id: string;
+  readonly history: PlaceDetails[];
+  readonly id: string | null;
   readonly text: string;
-  readonly autoCompleteResults: any[];
-  readonly detailResults: any[];
+  readonly autoCompleteResults: google.maps.places.QueryAutocompletePrediction[];
+  readonly detailResults: PlaceDetails | null;
   readonly processing: boolean;
   readonly error: string | null;
 }
@@ -16,7 +22,7 @@ const initialState: LocationState = {
   id: "",
   text: "",
   autoCompleteResults: [],
-  detailResults: [],
+  detailResults: null,
   processing: false,
   error: null,
 };
@@ -32,7 +38,10 @@ export const LocationSlice = createSlice({
         processing: true,
       };
     },
-    fetchAutoCompleteResultsSucess: (state, action: PayloadAction<any>) => {
+    fetchAutoCompleteResultsSucess: (
+      state,
+      action: PayloadAction<google.maps.places.QueryAutocompletePrediction[]>
+    ) => {
       return {
         ...state,
         autoCompleteResults: action.payload,
@@ -55,7 +64,10 @@ export const LocationSlice = createSlice({
         error: null,
       };
     },
-    requestDetailResultsSucess: (state, action: PayloadAction<any[]>) => {
+    requestDetailResultsSucess: (
+      state,
+      action: PayloadAction<PlaceDetails>
+    ) => {
       return {
         ...state,
         detailResults: action.payload,
@@ -67,15 +79,12 @@ export const LocationSlice = createSlice({
     requestDetailResultsError: (state, action: PayloadAction<string>) => {
       return {
         ...state,
-        detailResults: [],
+        detailResults: null,
         processing: false,
         error: action.payload,
       };
     },
-    addToHistory: (
-      state,
-      action: PayloadAction<google.maps.places.PlaceResult>
-    ) => {
+    addToHistory: (state, action: PayloadAction<PlaceDetails>) => {
       return {
         ...state,
         history: [...state.history, action.payload],
@@ -100,7 +109,6 @@ export const {
 } = LocationSlice.actions;
 
 export const selectHistory = (state: RootState) => state.locations.history;
-export const selectLocationId = (state: RootState) => state.locations.id;
 export const selectAutoCompleteResults = (state: RootState) =>
   state.locations.autoCompleteResults;
 export const selectDetailResults = (state: RootState) =>
