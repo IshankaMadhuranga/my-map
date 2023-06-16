@@ -60,6 +60,7 @@ export const LocationSlice = createSlice({
       return {
         ...state,
         id: action.payload,
+        autoCompleteResults: [],
         processing: true,
         error: null,
       };
@@ -90,16 +91,11 @@ export const LocationSlice = createSlice({
         history: [...state.history, action.payload],
       };
     },
-
-    deleteAllHistory: (state) => {
-      return { ...state, history: [] };
-    },
   },
 });
 
 export const {
   addToHistory,
-  deleteAllHistory,
   requestAutoCompleteResults,
   fetchAutoCompleteResultsSucess,
   fetchAutoCompleteResultsError,

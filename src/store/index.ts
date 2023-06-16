@@ -10,7 +10,9 @@ export const store = configureStore({
     locations: locationReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(epicMiddleware),
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat(epicMiddleware),
 });
 
 epicMiddleware.run(rootEpic);
