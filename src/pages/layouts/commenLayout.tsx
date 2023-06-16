@@ -1,5 +1,6 @@
 import React, { FC, CSSProperties } from "react";
 import { Layout } from "antd";
+import { ILayout } from "../../common/interfaces";
 
 const { Header, Footer, Content } = Layout;
 
@@ -22,10 +23,6 @@ const footerStyle: CSSProperties = {
   height: "4rem",
   backgroundColor: "#7dbcea",
 };
-
-export interface ILayout {
-  children: JSX.Element;
-}
 
 const CommenLayout: FC<ILayout> = ({ children }) => {
   return (

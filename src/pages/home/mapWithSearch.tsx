@@ -3,7 +3,6 @@ import { GoogleMap, Marker } from "@react-google-maps/api";
 import { AutoComplete } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  PlaceDetails,
   requestDetailResults,
   selectDetailResults,
 } from "../../store/reducers/locationSlice";
@@ -14,17 +13,14 @@ import {
   selectHistory,
   selectAutoCompleteResults,
 } from "../../store/reducers/predictionSlice";
+import { IDropDown, IPlaceDetails } from "../../common/interfaces";
 
-interface DropDown {
-  label: string;
-  value: string;
-}
 const MapWithSearchBox: FC = () => {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [searchText, setSearchText] = useState<string>("");
 
   const [value, setValue] = useState("");
-  const [options, setOptions] = useState<DropDown[]>([]);
+  const [options, setOptions] = useState<IDropDown[]>([]);
 
   const center = useMemo(() => ({ lat: 4.2105, lng: 101.9758 }), []);
 
@@ -55,7 +51,7 @@ const MapWithSearchBox: FC = () => {
   useEffect(() => {
     if (history.length > 0) {
       if (autoCompleteResults.length > 0) {
-        let newObjs: DropDown[] = [];
+        let newObjs: IDropDown[] = [];
 
         history.forEach((his) => {
           const recentIndex = autoCompleteResults.findIndex(
@@ -98,7 +94,7 @@ const MapWithSearchBox: FC = () => {
     setMap(map);
   };
 
-  const setUpMap = (value: PlaceDetails) => {
+  const setUpMap = (value: IPlaceDetails) => {
     const loc = value?.geometry?.location;
     if (map && loc) {
       map.panTo(loc);

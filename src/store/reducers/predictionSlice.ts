@@ -1,21 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "..";
+import { IPlaceDetails } from "../../common/interfaces";
+import IPredictionState from "../../common/interfaces/predictionState";
 
-export interface PlaceDetails {
-  formatted_address?: string;
-  place_id: string;
-  icon?: string;
-  geometry?: google.maps.places.PlaceGeometry;
-}
-interface LocationState {
-  readonly history: PlaceDetails[];
-  readonly text: string;
-  readonly autoCompleteResults: google.maps.places.QueryAutocompletePrediction[];
-  readonly processing: boolean;
-  readonly error: string | null;
-}
-
-const initialState: LocationState = {
+const initialState: IPredictionState = {
   history: [],
   text: "",
   autoCompleteResults: [],
@@ -58,7 +46,7 @@ export const PredictionSlice = createSlice({
         processing: false,
       };
     },
-    addToHistory: (state, action: PayloadAction<PlaceDetails>) => {
+    addToHistory: (state, action: PayloadAction<IPlaceDetails>) => {
       return {
         ...state,
         history: [...state.history, action.payload],

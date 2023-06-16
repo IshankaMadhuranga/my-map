@@ -1,20 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "..";
+import { IPlaceDetails } from "../../common/interfaces";
+import ILocationState from "../../common/interfaces/locationState";
 
-export interface PlaceDetails {
-  formatted_address?: string;
-  place_id: string;
-  icon?: string;
-  geometry?: google.maps.places.PlaceGeometry;
-}
-interface LocationState {
-  readonly id: string | null;
-  readonly detailResults: PlaceDetails | null;
-  readonly processing: boolean;
-  readonly error: string | null;
-}
-
-const initialState: LocationState = {
+const initialState: ILocationState = {
   id: "",
   detailResults: null,
   processing: false,
@@ -35,7 +24,7 @@ export const LocationSlice = createSlice({
     },
     requestDetailResultsSucess: (
       state,
-      action: PayloadAction<PlaceDetails>
+      action: PayloadAction<IPlaceDetails>
     ) => {
       return {
         detailResults: action.payload,
