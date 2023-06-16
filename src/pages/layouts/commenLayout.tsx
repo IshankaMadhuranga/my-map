@@ -9,11 +9,11 @@ const { Content } = Layout;
 const CommenLayout: FC<ILayout> = ({ children }) => {
   return (
     <Layout>
-      <AppHeader header="App Header" />
+      <AppHeader header="Google place finder" />
       <Content className="app-content">
         <div className="main-container">{children}</div>
       </Content>
-      <AppFooter footer="Footer" />
+      <AppFooter footer="Map data ©2023 Google - Ishanka sample project" />
     </Layout>
   );
 };

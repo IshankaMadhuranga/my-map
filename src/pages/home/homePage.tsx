@@ -1,4 +1,4 @@
-import { FC, useState, useEffect, useMemo } from "react";
+import { FC, useState, useEffect, useMemo, CSSProperties } from "react";
 import { GoogleMap } from "@react-google-maps/api";
 import { AutoComplete } from "antd";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,8 +13,13 @@ import {
   selectHistory,
   selectAutoCompleteResults,
 } from "../../store/reducers/predictionSlice";
-import { IDropDown, IPlaceDetails } from "../../common/interfaces";
+import { IDropDown } from "../../common/interfaces";
 import GoogleMarker from "../../components/marker";
+
+const mapContainerStyle: CSSProperties = {
+  width: "100%",
+  height: "100%",
+};
 
 const HomePage: FC = () => {
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -67,7 +72,11 @@ const HomePage: FC = () => {
 
   useEffect(() => {
     if (detailResults) {
-      setUpMap(detailResults);
+      const loc = detailResults?.geometry?.location;
+      if (map && loc) {
+        map.panTo(loc);
+        map.setZoom(10);
+      }
 
       const index = history.findIndex(
         (ele) => ele.place_id == detailResults.place_id
@@ -78,23 +87,6 @@ const HomePage: FC = () => {
     }
   }, [detailResults]);
 
-  const mapContainerStyle = {
-    width: "100%",
-    height: "100%",
-  };
-
-  const onLoad = (map: google.maps.Map) => {
-    setMap(map);
-  };
-
-  const setUpMap = (value: IPlaceDetails) => {
-    const loc = value?.geometry?.location;
-    if (map && loc) {
-      map.panTo(loc);
-      map.setZoom(10);
-    }
-  };
-
   const onSelect = (
     value: string,
     option: { label: string; value: string }
@@ -103,16 +95,12 @@ const HomePage: FC = () => {
     dispatch(requestDetailResults(value));
   };
 
-  const onChange = (data: string) => {
-    setPlaceValue(data);
-  };
-
   return (
     <GoogleMap
       mapContainerStyle={mapContainerStyle}
       center={center}
       zoom={8}
-      onLoad={onLoad}
+      onLoad={setMap}
     >
       <AutoComplete
         value={placeValue}
@@ -124,7 +112,7 @@ const HomePage: FC = () => {
             dispatch(requestAutoCompleteResults(text));
           }
         }}
-        onChange={onChange}
+        onChange={setPlaceValue}
         size="large"
         placeholder="Search places..."
         allowClear

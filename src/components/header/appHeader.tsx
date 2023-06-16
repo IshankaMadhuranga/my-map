@@ -7,11 +7,7 @@ const defaultProps = {
 };
 
 const AppHeader: FC<IHeader> = ({ header }) => {
-  return (
-    <Header className="app-header">
-      <h2>{header}</h2>
-    </Header>
-  );
+  return <Header className="app-header">{header}</Header>;
 };
 AppHeader.defaultProps = defaultProps;
 

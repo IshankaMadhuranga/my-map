@@ -19,8 +19,10 @@
 }
 
 .app-header {
-  text-align: center;
-  color: #fff;
+  font-weight: 500;
+  font-size: x-large;
+  text-align: left;
+  color: hsl(209, 75%, 48%);
   height: 5rem;
   background-color: #7dbcea;
 }
