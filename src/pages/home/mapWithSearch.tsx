@@ -4,13 +4,16 @@ import { AutoComplete } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
   PlaceDetails,
+  requestDetailResults,
+  selectDetailResults,
+} from "../../store/reducers/locationSlice";
+
+import {
   addToHistory,
   requestAutoCompleteResults,
-  requestDetailResults,
-  selectAutoCompleteResults,
-  selectDetailResults,
   selectHistory,
-} from "../../store/reducers/locationSlice";
+  selectAutoCompleteResults,
+} from "../../store/reducers/predictionSlice";
 
 interface DropDown {
   label: string;

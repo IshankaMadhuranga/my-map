@@ -11,7 +11,7 @@ import {
   fetchAutoCompleteResultsError,
   fetchAutoCompleteResultsSucess,
   requestAutoCompleteResults,
-} from "../reducers/locationSlice";
+} from "../reducers/predictionSlice";
 import { AnyAction } from "@reduxjs/toolkit";
 import { RootState } from "..";
 import { getPredictions } from "../../services/locationService";

@@ -1,11 +1,13 @@
 import { Epic, StateObservable, ofType } from "redux-observable";
 import {
   catchError,
-  map,
-  switchMap,
   Observable,
   withLatestFrom,
   from,
+  mergeMap,
+  of,
+  concatMap,
+  concat,
 } from "rxjs";
 import {
   requestDetailResults,
@@ -15,6 +17,7 @@ import {
 import { AnyAction } from "@reduxjs/toolkit";
 import { RootState } from "..";
 import { getDetails } from "../../services/locationService";
+import { removeAutoCompleteResults } from "../reducers/predictionSlice";
 
 const locationDetailsEpic: Epic = (
   action$: Observable<AnyAction>,
@@ -23,12 +26,21 @@ const locationDetailsEpic: Epic = (
   action$.pipe(
     ofType(requestDetailResults.type),
     withLatestFrom(state$),
-    switchMap(([action, state]) => {
+    mergeMap(([action, state]) => {
       return from(getDetails(action.payload)).pipe(
-        map(({ place_id, geometry, icon, formatted_address }: any) => {
-          const data = { place_id, geometry, icon, formatted_address };
-          return requestDetailResultsSucess(data);
-        }),
+        concatMap(({ place_id, geometry, icon, formatted_address }: any) =>
+          concat(
+            of(
+              requestDetailResultsSucess({
+                place_id,
+                geometry,
+                icon,
+                formatted_address,
+              })
+            ),
+            of(removeAutoCompleteResults())
+          )
+        ),
         catchError((error) => from([requestDetailResultsError(error.message)]))
       );
     })
