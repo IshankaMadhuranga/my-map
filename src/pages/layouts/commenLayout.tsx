@@ -1,15 +1,10 @@
-import React, { FC, CSSProperties } from "react";
+import { FC, CSSProperties } from "react";
 import { Layout } from "antd";
 import { ILayout } from "../../common/interfaces";
+import AppHeader from "../../components/header";
+import AppFooter from "../../components/footer";
 
-const { Header, Footer, Content } = Layout;
-
-const headerStyle: CSSProperties = {
-  textAlign: "center",
-  color: "#fff",
-  height: "5rem",
-  backgroundColor: "#7dbcea",
-};
+const { Content } = Layout;
 
 const contentStyle: CSSProperties = {
   textAlign: "center",
@@ -17,23 +12,14 @@ const contentStyle: CSSProperties = {
   backgroundColor: "#108ee9",
 };
 
-const footerStyle: CSSProperties = {
-  textAlign: "center",
-  color: "#fff",
-  height: "4rem",
-  backgroundColor: "#7dbcea",
-};
-
 const CommenLayout: FC<ILayout> = ({ children }) => {
   return (
     <Layout style={{ margin: 0 }}>
-      <Header style={headerStyle}>
-        <div></div>
-      </Header>
+      <AppHeader header="App Header" />
       <Content style={contentStyle}>
         <div style={{ height: "calc(100vh - 9rem)" }}>{children}</div>
       </Content>
-      <Footer style={footerStyle}>Footer</Footer>
+      <AppFooter footer="Footer" />
     </Layout>
   );
 };

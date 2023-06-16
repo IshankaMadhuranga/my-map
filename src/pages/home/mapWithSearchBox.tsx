@@ -1,5 +1,5 @@
-import React, { FC, useState, useEffect, useMemo } from "react";
-import { GoogleMap, Marker } from "@react-google-maps/api";
+import { FC, useState, useEffect, useMemo } from "react";
+import { GoogleMap } from "@react-google-maps/api";
 import { AutoComplete } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -14,12 +14,11 @@ import {
   selectAutoCompleteResults,
 } from "../../store/reducers/predictionSlice";
 import { IDropDown, IPlaceDetails } from "../../common/interfaces";
+import GoogleMarker from "../../components/marker";
 
 const MapWithSearchBox: FC = () => {
   const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [searchText, setSearchText] = useState<string>("");
-
-  const [value, setValue] = useState("");
+  const [placeValue, setPlaceValue] = useState("");
   const [options, setOptions] = useState<IDropDown[]>([]);
 
   const center = useMemo(() => ({ lat: 4.2105, lng: 101.9758 }), []);
@@ -28,12 +27,6 @@ const MapWithSearchBox: FC = () => {
   const autoCompleteResults = useSelector(selectAutoCompleteResults);
   const detailResults = useSelector(selectDetailResults);
   const history = useSelector(selectHistory);
-
-  useEffect(() => {
-    if (searchText.length > 1) {
-      dispatch(requestAutoCompleteResults(searchText));
-    }
-  }, [searchText]);
 
   useEffect(() => {
     if (autoCompleteResults.length > 0) {
@@ -106,12 +99,12 @@ const MapWithSearchBox: FC = () => {
     value: string,
     option: { label: string; value: string }
   ) => {
-    setValue(option.label);
+    setPlaceValue(option.label);
     dispatch(requestDetailResults(value));
   };
 
   const onChange = (data: string) => {
-    setValue(data);
+    setPlaceValue(data);
   };
 
   return (
@@ -122,7 +115,7 @@ const MapWithSearchBox: FC = () => {
       onLoad={onLoad}
     >
       <AutoComplete
-        value={value}
+        value={placeValue}
         options={autoCompleteResults.length ? options : []}
         style={{
           width: "16rem",
@@ -131,23 +124,18 @@ const MapWithSearchBox: FC = () => {
           marginTop: "0.7rem",
         }}
         onSelect={onSelect}
-        onSearch={(text) => setSearchText(text)}
+        onSearch={(text) => {
+          if (text.length > 1) {
+            dispatch(requestAutoCompleteResults(text));
+          }
+        }}
         onChange={onChange}
         size="large"
         placeholder="Search places..."
         allowClear
       />
 
-      {detailResults && (
-        <Marker
-          key={detailResults.place_id}
-          icon={detailResults.icon}
-          position={{
-            lat: detailResults.geometry?.location?.lat()!,
-            lng: detailResults.geometry?.location?.lng()!,
-          }}
-        />
-      )}
+      {detailResults && <GoogleMarker {...detailResults} />}
     </GoogleMap>
   );
 };

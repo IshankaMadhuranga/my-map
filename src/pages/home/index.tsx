@@ -1,2 +1,2 @@
-import MapWithSearchBox from "./mapWithSearch";
+import MapWithSearchBox from "./mapWithSearchBox";
 export default MapWithSearchBox;
