@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MapWithSearchBox from "../pages/home";
+import Home from "../pages/home";
 import CommenLayout from "../pages/layouts/commenLayout";
 
 const AppRoutes: FC = () => {
@@ -8,7 +8,7 @@ const AppRoutes: FC = () => {
     <BrowserRouter>
       <CommenLayout>
         <Routes>
-          <Route index element={<MapWithSearchBox />} />
+          <Route index element={<Home />} />
         </Routes>
       </CommenLayout>
     </BrowserRouter>

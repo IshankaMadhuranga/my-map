@@ -1,2 +1,2 @@
-import MapWithSearchBox from "./mapWithSearchBox";
-export default MapWithSearchBox;
+import HomePage from "./homePage";
+export default HomePage;

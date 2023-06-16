@@ -16,7 +16,7 @@ import {
 import { IDropDown, IPlaceDetails } from "../../common/interfaces";
 import GoogleMarker from "../../components/marker";
 
-const MapWithSearchBox: FC = () => {
+const HomePage: FC = () => {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [placeValue, setPlaceValue] = useState("");
   const [options, setOptions] = useState<IDropDown[]>([]);
@@ -140,4 +140,4 @@ const MapWithSearchBox: FC = () => {
   );
 };
 
-export default MapWithSearchBox;
+export default HomePage;
