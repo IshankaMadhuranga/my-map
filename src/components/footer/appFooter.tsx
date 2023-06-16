@@ -1,15 +1,15 @@
-import { FC, CSSProperties } from "react";
+import { FC } from "react";
 import { Footer } from "antd/es/layout/layout";
 import { IFooter } from "../../common/interfaces/components";
 
-const footerStyle: CSSProperties = {
-  textAlign: "center",
-  color: "#fff",
-  height: "4rem",
-  backgroundColor: "#7dbcea",
+const defaultProps = {
+  footer: "Footer",
 };
+
 const AppFooter: FC<IFooter> = ({ footer }) => {
-  return <Footer style={footerStyle}>{footer}</Footer>;
+  return <Footer className="app-footer">{footer}</Footer>;
 };
+
+AppFooter.defaultProps = defaultProps;
 
 export default AppFooter;

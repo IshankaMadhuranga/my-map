@@ -117,12 +117,7 @@ const HomePage: FC = () => {
       <AutoComplete
         value={placeValue}
         options={autoCompleteResults.length ? options : []}
-        style={{
-          width: "16rem",
-          position: "absolute",
-          left: "12rem",
-          marginTop: "0.7rem",
-        }}
+        className="page-search"
         onSelect={onSelect}
         onSearch={(text) => {
           if (text.length > 1) {

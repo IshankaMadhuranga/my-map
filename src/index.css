@@ -18,6 +18,32 @@
   display: none;
 }
 
+.app-header {
+  text-align: center;
+  color: #fff;
+  height: 5rem;
+  background-color: #7dbcea;
+}
+.app-footer{
+  text-align: center;
+  color: #fff;
+  height: 4rem;
+  background-color: #7dbcea;
+}
+.app-content{
+  text-align: center;
+  color: #fff;
+  background-color: #108ee9;
+}
+.main-container{
+  height: calc(100vh - 9rem);
+}
+.page-search{
+  width: 16rem;
+  position: absolute;
+  left: 12rem;
+  margin-top: 0.7rem;
+}
 
 @media (prefers-color-scheme: light) {
   :root {

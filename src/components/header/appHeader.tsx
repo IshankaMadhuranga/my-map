@@ -1,20 +1,18 @@
-import React, { FC, CSSProperties } from "react";
+import { FC } from "react";
 import { Header } from "antd/es/layout/layout";
 import { IHeader } from "../../common/interfaces/components";
 
-const headerStyle: CSSProperties = {
-  textAlign: "center",
-  color: "#fff",
-  height: "5rem",
-  backgroundColor: "#7dbcea",
+const defaultProps = {
+  header: "Header",
 };
 
 const AppHeader: FC<IHeader> = ({ header }) => {
   return (
-    <Header style={headerStyle}>
+    <Header className="app-header">
       <h2>{header}</h2>
     </Header>
   );
 };
+AppHeader.defaultProps = defaultProps;
 
 export default AppHeader;
