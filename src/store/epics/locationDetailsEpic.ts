@@ -18,6 +18,7 @@ import { AnyAction } from "@reduxjs/toolkit";
 import { RootState } from "..";
 import { getDetails } from "../../services/locationService";
 import { removeAutoCompleteResults } from "../reducers/predictionSlice";
+import { IPlaceDetails } from "../../common/interfaces";
 
 const locationDetailsEpic: Epic = (
   action$: Observable<AnyAction>,
@@ -28,18 +29,19 @@ const locationDetailsEpic: Epic = (
     withLatestFrom(state$),
     mergeMap(([action, state]) => {
       return from(getDetails(action.payload)).pipe(
-        concatMap(({ place_id, geometry, icon, formatted_address }: any) =>
-          concat(
-            of(
-              requestDetailResultsSucess({
-                place_id,
-                geometry,
-                icon,
-                formatted_address,
-              })
-            ),
-            of(removeAutoCompleteResults())
-          )
+        concatMap(
+          ({ place_id, geometry, icon, formatted_address }: IPlaceDetails) =>
+            concat(
+              of(
+                requestDetailResultsSucess({
+                  place_id,
+                  geometry,
+                  icon,
+                  formatted_address,
+                })
+              ),
+              of(removeAutoCompleteResults())
+            )
         ),
         catchError((error) => from([requestDetailResultsError(error.message)]))
       );

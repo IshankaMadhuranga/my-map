@@ -49,7 +49,7 @@ const HomePage: FC = () => {
   useEffect(() => {
     if (history.length > 0) {
       if (autoCompleteResults.length > 0) {
-        let newObjs: IDropDown[] = [];
+        const newObjs: IDropDown[] = [];
 
         history.forEach((his) => {
           const recentIndex = autoCompleteResults.findIndex(

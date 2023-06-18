@@ -1,3 +1,5 @@
+import { IPlaceDetails } from "../common/interfaces";
+
 const service = new google.maps.places.AutocompleteService();
 
 export const getPredictions = (place: string) => {
@@ -20,7 +22,7 @@ export const getPredictions = (place: string) => {
   });
 };
 
-export const getDetails = (place: string) => {
+export const getDetails = (place: string): Promise<IPlaceDetails> => {
   const detailService = new google.maps.places.PlacesService(
     document.createElement("div")
   );
@@ -34,8 +36,17 @@ export const getDetails = (place: string) => {
         placeDetails: google.maps.places.PlaceResult | null,
         status: google.maps.places.PlacesServiceStatus
       ) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          resolve(placeDetails);
+        if (
+          status === google.maps.places.PlacesServiceStatus.OK &&
+          placeDetails
+        ) {
+          const {
+            place_id = "",
+            geometry,
+            icon,
+            formatted_address,
+          } = placeDetails;
+          resolve({ place_id, geometry, icon, formatted_address });
         } else {
           reject("Error: " + status);
         }
